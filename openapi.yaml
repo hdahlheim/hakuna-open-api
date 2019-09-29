@@ -1,0 +1,254 @@
+openapi: 3.0.2
+info:
+  version: 0.0.1
+  title: Hakuna-open-api
+  description: Unoffical hakuna api spec
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+servers:
+- url: https://{company}.hakuna.ch/api/{basePath}
+  description: The production API server
+  variables:
+    company:
+      default: example
+    basePath:
+      default: v1
+security: 
+  - ApiToken: []
+  
+paths:
+  /ping:
+    get:
+      tags: 
+        - test
+      description: Test endpoint
+      operationId: ping
+      responses:
+        '200':
+          description: Pong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pong'
+  /overview:
+    get:
+      tags: 
+        - personal
+      description: Retrieves key numbers about your user, e.g. your current overtime.
+      operationId: overview
+      responses:
+        '200':
+          description: key metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyMetrics'
+  /timer:
+    get:
+      tags: 
+        - personal
+      description: Retrieves the timer.
+      operationId: getTimer
+      responses:
+        '200':
+          description: Time Entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timer'
+    post:
+      tags:
+        - personal
+      description: Start Timer
+      operationId: startTime
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTimer'
+      responses:
+        '200':
+          description: ok
+    put:
+      tags:
+        - personal
+      description: End Timer
+      operationId: endTimer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndTimer'
+      responses:
+        '200':
+          description: ok
+    delete:
+      tags:
+        - personal 
+      description: Deletes the timer
+      operationId: deleteTimer
+      responses:
+        '200':
+          description: ok
+  /time_entries:
+    get:
+      parameters: 
+        - name: date
+          in: query
+          description: Date of time entry
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: List of time entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfTimeEntries'
+    
+components:
+  schemas:
+    Pong:
+      type: object
+      properties:
+        overtime: 
+          type: string
+        overtime_in_secondes: 
+          type: integer
+        vacation: 
+          type: object
+          properties:
+            redeemed_days: 
+              type: number
+              format: float
+            remaining_days:
+              type: number
+              format: float
+    KeyMetrics:
+      type: object
+      properties:
+        overtime: 
+          type: string
+        overtime_in_secondes: 
+          type: integer
+        vacation: 
+          type: object
+          properties:
+            redeemed_days: 
+              type: number
+              format: float
+            remaining_days:
+              type: number
+              format: float
+    Timer:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        mode:
+          type: string
+          enum: 
+            - start_end
+            - duration
+        start_time:
+          type: string
+        duration_in_seconds:
+          type: integer
+        note:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        task:
+          $ref: '#/components/schemas/Task'
+        project:
+          $ref: '#/components/schemas/Project'
+    NewTimer:
+      type: object
+      required: 
+        - task_id
+      properties:
+        task_id: 
+          type: integer
+        star_time:
+          type: string
+        duration:
+          type: string
+        project_id:
+          type: integer
+        note:
+          type: string
+    EndTimer:
+      type: object 
+      properties:
+        end_time:
+          type: string
+        duration:
+          type: string
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email: 
+          type: string
+        team:
+          type: array
+          items:
+            type: string
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        archived:
+          type: boolean
+        default:
+          type: boolean
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        client:
+          type: string
+        archived:
+          type: boolean
+        teams:
+          type: array
+          items:
+            type: string
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        buget:
+          type: string
+        buget_in_seconds:
+          type: integer
+        buget_is_monthly:
+          type: boolean
+    TimeEntries:
+      allOf:
+        - $ref: '#/components/schemas/Timer'
+      properties:
+        id:
+          type: integer
+        end_time:
+          type: string
+    ListOfTimeEntries:
+      type: array
+      items:
+        $ref: '#/components/schemas/TimeEntries'
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: X-Auth-Token
