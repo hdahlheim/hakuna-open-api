@@ -121,6 +121,37 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimit'
 
+/users:
+    get:
+      tags:
+        - User
+      description: |
+        Retrieves all user you can manage (as admin or team leader). See here how to make requests for these users.
+      operationId: listUsers
+      responses:
+        '200':
+          description: List users you can manage
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/me:
+    get:
+      tags:
+        - User
+      description: |
+        Retrives the currently authenticated user.
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Authenticated user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
 components:
   responses:
     RateLimit:
@@ -141,19 +172,9 @@ components:
     Pong:
       type: object
       properties:
-        overtime: 
+        pong:
           type: string
-        overtime_in_secondes: 
-          type: integer
-        vacation: 
-          type: object
-          properties:
-            redeemed_days: 
-              type: number
-              format: float
-            remaining_days:
-              type: number
-              format: float
+          format: date-time
     KeyMetrics:
       type: object
       properties:
@@ -222,6 +243,7 @@ components:
           type: string
         email: 
           type: string
+          format: email
         team:
           type: array
           items:
