@@ -114,19 +114,9 @@ components:
     Pong:
       type: object
       properties:
-        overtime: 
+        pong:
           type: string
-        overtime_in_secondes: 
-          type: integer
-        vacation: 
-          type: object
-          properties:
-            redeemed_days: 
-              type: number
-              format: float
-            remaining_days:
-              type: number
-              format: float
+          format: date-time
     KeyMetrics:
       type: object
       properties:
