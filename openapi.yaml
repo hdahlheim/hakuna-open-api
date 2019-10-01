@@ -24,6 +24,8 @@ paths:
         - test
       description: Test endpoint
       operationId: ping
+      parameters:
+        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: Pong
@@ -37,6 +39,8 @@ paths:
         - personal
       description: Retrieves key numbers about your user, e.g. your current overtime.
       operationId: overview
+      parameters:
+        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: key metrics
@@ -50,6 +54,8 @@ paths:
         - personal
       description: Retrieves the timer.
       operationId: getTimer
+      parameters:
+        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: Time Entry
@@ -62,6 +68,8 @@ paths:
         - personal
       description: Start Timer
       operationId: startTime
+      parameters:
+        - $ref: '#/components/parameters/user_id'
       requestBody:
         content:
           application/json:
@@ -75,6 +83,8 @@ paths:
         - personal
       description: End Timer
       operationId: endTimer
+      parameters:
+        - $ref: '#/components/parameters/user_id'
       requestBody:
         content:
           application/json:
@@ -93,7 +103,8 @@ paths:
           description: ok
   /time_entries:
     get:
-      parameters: 
+      parameters:
+        - $ref: '#/components/parameters/user_id'
         - name: date
           in: query
           description: Date of time entry
@@ -110,6 +121,17 @@ paths:
                 $ref: '#/components/schemas/ListOfTimeEntries'
     
 components:
+  parameters:
+    user_id:
+      in: query
+      name: user_id
+      required: false
+      schema:
+        type: integer
+      example: 4
+      description: |
+        For these personal API endpoints you can supply an optional user_id parameter. This allows you to make requests in the context of a user you can manage. For example if you are an admin/team leader and would like to retrieve the time entries of another user, use e.g. GET /api/v1/time_entries?date=2016-11-08&user_id=4. To retrieve the list of users you can manage, see Users.
+
   schemas:
     Pong:
       type: object
@@ -247,8 +269,10 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/TimeEntries'
+
   securitySchemes:
     ApiToken:
       type: apiKey
       in: header
       name: X-Auth-Token
+
