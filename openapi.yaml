@@ -31,6 +31,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pong'
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /overview:
     get:
       tags: 
@@ -44,6 +46,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/KeyMetrics'
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /timer:
     get:
       tags: 
@@ -57,6 +61,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Timer'
+        '429':
+          $ref: '#/components/responses/RateLimit'
     post:
       tags:
         - personal
@@ -70,6 +76,8 @@ paths:
       responses:
         '200':
           description: ok
+        '429':
+          $ref: '#/components/responses/RateLimit'
     put:
       tags:
         - personal
@@ -91,6 +99,8 @@ paths:
       responses:
         '200':
           description: ok
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /time_entries:
     get:
       parameters: 
@@ -108,6 +118,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListOfTimeEntries'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+
 /users:
     get:
       tags:
@@ -140,6 +153,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 components:
+  responses:
+    RateLimit:
+      description: |
+        Our API rate limits are setup per IP and tenant. We allow 4000 requests per hour.
+
+        If the rate limit is being triggered, the response will have HTTP status 429 contain a corresponding JSON structure.
+      headers:
+        Retry-After:
+          description: The Retry-After header will indicate how long the client should wait before trying again.
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Pong:
       type: object
@@ -268,6 +296,13 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/TimeEntries'
+    Error:
+      properties:
+        error:
+          type: string
+      example:
+        error: 'You sent too many requests, please try again later.'
+
   securitySchemes:
     ApiToken:
       type: apiKey
