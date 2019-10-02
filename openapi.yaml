@@ -23,8 +23,6 @@ paths:
         - test
       description: Test endpoint
       operationId: ping
-      parameters:
-        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: Pong
@@ -49,6 +47,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/KeyMetrics'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
   /timer:
@@ -66,6 +66,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Timer'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
     post:
@@ -83,6 +85,8 @@ paths:
       responses:
         '200':
           description: ok
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
     put:
@@ -100,6 +104,8 @@ paths:
       responses:
         '200':
           description: ok
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
     delete:
@@ -112,6 +118,8 @@ paths:
       responses:
         '200':
           description: ok
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
   /time_entries:
@@ -134,6 +142,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListOfTimeEntries'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
     post:
@@ -149,6 +159,8 @@ paths:
       responses:
         '200':
           description: ok
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
   /time_entries/{id}:
@@ -170,6 +182,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimeEntries'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
     patch:
@@ -191,6 +205,8 @@ paths:
       responses:
         '200':
           description: ok
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
     delete:
@@ -207,6 +223,8 @@ paths:
       responses:
         '200':
           description: ok
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
   /users:
@@ -225,6 +243,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
   /users/me:
@@ -322,9 +342,26 @@ components:
             type: integer
       content:
         application/json:
+          example:
+            error: 'You sent too many requests, please try again later.'
           schema:
             $ref: '#/components/schemas/Error'
-
+    Unauthorized:
+      description: The Request is unauthorized, please check your API-Key
+      content:
+        application/json:
+          example:
+            error: '401 Unauthorized (300)'
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The Request is authorized, but you don't have access to the Resource
+      content:
+        application/json:
+          example:
+            error: '403'
+          schema:
+            $ref: '#/components/schemas/HttpStatus'
   schemas:
     Pong:
       type: object
@@ -476,6 +513,13 @@ components:
           type: string
       example:
         error: 'You sent too many requests, please try again later.'
+    HttpStatus:
+      description: Represents a HTTP Status
+      properties:
+        status:
+          type: integer
+          example:
+            status: 403
     Company:
       properties:
         company_name:
