@@ -100,11 +100,15 @@ paths:
       responses:
         '200':
           description: ok
+        '429':
+          $ref: '#/components/responses/RateLimit'
     delete:
       tags:
         - personal
       description: Deletes the timer
       operationId: deleteTimer
+      parameters:
+        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: ok
@@ -152,6 +156,7 @@ paths:
       tags:
         - personal
       parameters:
+        - $ref: '#/components/parameters/user_id'
         - in: path
           name: id
           schema:
@@ -171,6 +176,7 @@ paths:
       tags:
         - personal
       parameters:
+        - $ref: '#/components/parameters/user_id'
         - in: path
           name: id
           schema:
@@ -191,6 +197,7 @@ paths:
       tags:
         - personal
       parameters:
+        - $ref: '#/components/parameters/user_id'
         - in: path
           name: id
           schema:
@@ -218,6 +225,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /users/me:
     get:
       tags:
@@ -232,7 +241,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+  /projects:
+    get:
+      tags:
+        - Global
+      description: |
+        Retrieves a list of all active and archived projects.
+      operationId: listProjects
+      responses:
+        '200':
+          description: List of all active and archived projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+  /company:
+    get:
+      tags:
+        - Global
+      description: |
+        Fetches account-wide company info.
+      operationId: fetchCompany
+      responses:
+        '200':
+          description: Account-wide company info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+  /organization/status:
+    get:
+      tags:
+        - Organization
+      operationId: fetchOrganizationStatus
+      description: |
+        **ATTENTION:** You need to use the **organization API token** to access this endpoint! This endpoint is for example useful if you want to show the presence/absence status of your users on a dashboard.
 
+        Retrieves today's presence/absence information about all users in your organization.
+      responses:
+        '200':
+          description: Today's presence/absence information about all users in your organization.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganizationStatus'
+        '429':
+          $ref: '#/components/responses/RateLimit'
 components:
   parameters:
     user_id:
@@ -412,6 +476,45 @@ components:
           type: string
       example:
         error: 'You sent too many requests, please try again later.'
+    Company:
+      properties:
+        company_name:
+          description: The configured name of the company
+          type: string
+        duration_format:
+          description: The configured display of durations, either `hhmm` or `decimal`
+          type: string
+          enum: [hhmm, decimal]
+        time_entry_mode:
+          description: The way how time is tracked, either `start_end` or `duration`. This setting changes how the [Time Entry] and [Timer] endpoints have to be used
+          type: string
+          enum: [start_end, duration]
+        absence_requests_enabled:
+          description: Whether or not absence requests module is enabled
+          type: boolean
+        projects_enabled:
+          description: Whether or not the projects module is enabled. This setting changes how the [Time Entry] and [Timer] endpoints have to be used
+          type: boolean
+        teams_enabled:
+          description: Whether or not the teams module is enabled
+          type: boolean
+    OrganizationStatus:
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        absent_first_half_day:
+          description: |
+            `true` if the user is absent in the first half day or the whole day (e.g. on vacation or due to part-time workplan).
+          type: boolean
+        absent_second_half_day:
+          description: |
+            `true` if the user is absent in the second half day or the whole day (e.g. on vacation or due to part-time workplan).
+          type: boolean
+        has_timer_running:
+          description: |
+            `true` if the user has a timer running
+          type: boolean
+
   securitySchemes:
     ApiToken:
       type: apiKey
