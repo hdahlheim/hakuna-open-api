@@ -21,7 +21,7 @@ paths:
   /ping:
     get:
       tags:
-        - test
+        - Test
       description: Test endpoint
       operationId: ping
       responses:
@@ -36,7 +36,7 @@ paths:
   /overview:
     get:
       tags:
-        - personal
+        - Personal
       description: Retrieves key numbers about your user, e.g. your current overtime.
       operationId: overview
       parameters:
@@ -55,7 +55,7 @@ paths:
   /timer:
     get:
       tags:
-        - personal
+        - Personal
       description: Retrieves the timer.
       operationId: getTimer
       parameters:
@@ -73,7 +73,7 @@ paths:
           $ref: '#/components/responses/RateLimit'
     post:
       tags:
-        - personal
+        - Personal
       description: Start Timer
       operationId: startTime
       parameters:
@@ -92,7 +92,7 @@ paths:
           $ref: '#/components/responses/RateLimit'
     put:
       tags:
-        - personal
+        - Personal
       description: End Timer
       operationId: endTimer
       parameters:
@@ -111,7 +111,7 @@ paths:
           $ref: '#/components/responses/RateLimit'
     delete:
       tags:
-        - personal
+        - Personal
       description: Deletes the timer
       operationId: deleteTimer
       parameters:
@@ -126,7 +126,7 @@ paths:
   /time_entries:
     get:
       tags:
-        - personal
+        - Personal
       parameters:
         - $ref: '#/components/parameters/user_id'
         - name: date
@@ -149,7 +149,7 @@ paths:
           $ref: '#/components/responses/RateLimit'
     post:
       tags:
-        - personal
+        - Personal
       parameters:
         - $ref: '#/components/parameters/user_id'
       requestBody:
@@ -167,7 +167,7 @@ paths:
   /time_entries/{id}:
     get:
       tags:
-        - personal
+        - Personal
       parameters:
         - $ref: '#/components/parameters/user_id'
         - in: path
@@ -189,7 +189,7 @@ paths:
           $ref: '#/components/responses/RateLimit'
     patch:
       tags:
-        - personal
+        - Personal
       parameters:
         - $ref: '#/components/parameters/user_id'
         - in: path
@@ -212,7 +212,7 @@ paths:
           $ref: '#/components/responses/RateLimit'
     delete:
       tags:
-        - personal
+        - Personal
       parameters:
         - $ref: '#/components/parameters/user_id'
         - in: path
@@ -231,7 +231,7 @@ paths:
   /absences:
     get:
       tags:
-        - personal
+        - Personal
       description: |
         Retrieves your absences in the supplied year
       parameters:
