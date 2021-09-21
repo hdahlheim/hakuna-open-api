@@ -1,3 +1,4 @@
+---
 openapi: 3.0.2
 info:
   version: 0.0.1
@@ -227,6 +228,34 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
+  /absences:
+    get:
+      tags:
+        - personal
+      description: |
+        Retrieves your absences in the supplied year
+      parameters:
+        - name: year
+          in: query
+          description: Year
+          required: true
+          schema:
+            type: string
+            format: year
+      operationId: listAbsences
+      responses:
+        '200':
+          description: List of absences for the given year of the current user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Absence'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /users:
     get:
       tags:
@@ -430,6 +459,42 @@ components:
           type: string
         duration:
           type: string
+    Absence:
+      type: object
+      properties:
+        id:
+          type: integer
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        first_half_day:
+          type: boolean
+        second_half_day:
+          type: boolean
+        is_recurring:
+          type: boolean
+        weekly_repeat_interval:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        absence_type:
+          $ref: '#/components/schemas/AbsenceType'
+    AbsenceType:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        grants_work_time:
+          type: boolean
+        is_vacation:
+          type: boolean
+        archived:
+          type: boolean
     User:
       type: object
       properties:
@@ -564,4 +629,3 @@ components:
       type: apiKey
       in: header
       name: X-Auth-Token
-
