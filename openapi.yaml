@@ -420,15 +420,17 @@ components:
         date:
           type: string
           format: date
-        mode:
-          type: string
-          enum:
-            - start_end
-            - duration
+          description: Date when timer was started in yyyy-mm-dd format
         start_time:
           type: string
+          description: Start time in hh:mm format
+        duration:
+          type: string
+          format: time
+          description: Duration in `hh:mm` format (as displayed in hakuna)
         duration_in_seconds:
           type: integer
+          description: Duration in seconds
         note:
           type: string
         user:
@@ -437,6 +439,12 @@ components:
           $ref: '#/components/schemas/Task'
         project:
           $ref: '#/components/schemas/Project'
+      example:
+        date: "2016-11-08"
+        start_time: "19:00"
+        duration: "02:16"
+        duration_in_seconds: 8138
+        note: "Did a lot of work."
     NewTimer:
       type: object
       required:
