@@ -256,6 +256,26 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
+  /absence_types:
+    get:
+      tags:
+        - Global
+      description: |
+        Retrieves all absence types
+      operationId: listAbsenceTypes
+      responses:
+        '200':
+          description: List of all absences types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AbsenceType'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /users:
     get:
       tags:
