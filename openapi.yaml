@@ -256,6 +256,26 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '429':
           $ref: '#/components/responses/RateLimit'
+  /absence_types:
+    get:
+      tags:
+        - Global
+      description: |
+        Retrieves all absence types
+      operationId: listAbsenceTypes
+      responses:
+        '200':
+          description: List of all absences types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AbsenceType'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /users:
     get:
       tags:
@@ -467,34 +487,64 @@ components:
         start_date:
           type: string
           format: date
+          description: Start date in ISO 8601 format
         end_date:
           type: string
           format: date
+          description: End date in ISO 8601 format
         first_half_day:
           type: boolean
+          description: |
+            `true` if this absence covers the the first half day (or the whole day),
+            `false` otherwise
         second_half_day:
           type: boolean
+          description: |
+            `true` if this absence covers the the second half day (or the whole day),
+            `false` otherwise
         is_recurring:
           type: boolean
+          description: Whether or not this absence is recurring
         weekly_repeat_interval:
           type: integer
+          description: The weekly repeat interval (`is_recurring` must be `true`)
+          nullable: true
         user:
           $ref: '#/components/schemas/User'
         absence_type:
           $ref: '#/components/schemas/AbsenceType'
+      example:
+        id: 148
+        start_date: "2016-01-06"
+        end_date: "2016-01-06"
+        first_half_day: true
+        second_half_day: false
+        is_recurring: false
+        weekly_repeat_interval: null
     AbsenceType:
       type: object
       properties:
         id:
           type: integer
+          description: The ID to reference this absence type
         name:
           type: string
+          description: The name of the absence type
         grants_work_time:
           type: boolean
+          description: if `true`, the absence type yields a time credit equaling the planned working time in the absent time frame.
         is_vacation:
           type: boolean
+          description: if `true`, the absence will affect the vacation balance.
         archived:
           type: boolean
+          description: "`true` if the absence type has been archived"
+      example:
+        id: 1
+        name: "Paid Leave"
+        archived: false
+        grants_work_time: true
+        is_vacation: false
     User:
       type: object
       properties:
