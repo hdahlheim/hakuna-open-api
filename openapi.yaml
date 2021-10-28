@@ -668,10 +668,6 @@ components:
           description: The configured display of durations, either `hhmm` or `decimal`
           type: string
           enum: [hhmm, decimal]
-        time_entry_mode:
-          description: The way how time is tracked, either `start_end` or `duration`. This setting changes how the [Time Entry] and [Timer] endpoints have to be used
-          type: string
-          enum: [start_end, duration]
         absence_requests_enabled:
           description: Whether or not absence requests module is enabled
           type: boolean
