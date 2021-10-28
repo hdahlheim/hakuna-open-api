@@ -312,6 +312,25 @@ paths:
                 $ref: '#/components/schemas/User'
         '429':
           $ref: '#/components/responses/RateLimit'
+  /tasks:
+    get:
+      tags:
+        - Global
+      description: Retrieves all tasks
+      operationId: listTasks
+      responses:
+        '200':
+          description: Task
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimit'
   /projects:
     get:
       tags:
@@ -568,6 +587,11 @@ components:
           type: boolean
         default:
           type: boolean
+      example:
+        id: 1,
+        name: "Development"
+        archived: false,
+        default: true
     Project:
       type: object
       properties:
